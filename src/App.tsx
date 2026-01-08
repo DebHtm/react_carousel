@@ -68,12 +68,11 @@ class App extends React.Component<{}, State> {
           <label htmlFor="itemId">Item width</label>
           <input
             className="carousel-controls__input"
-            {...{ for: 'itemId' }}
             id="itemId"
             data-cy="itemWidth"
             type="number"
             min={130}
-            max={260}
+            max={200}
             value={itemWidth}
             onChange={this.handleNumberChange('itemWidth', 130, 200)}
           />
@@ -81,7 +80,6 @@ class App extends React.Component<{}, State> {
           <label htmlFor="frameSize">Frame size</label>
           <input
             className="carousel-controls__input"
-            {...{ for: 'frameId' }}
             id="frameSize"
             data-cy="frameSize"
             type="number"
@@ -94,7 +92,6 @@ class App extends React.Component<{}, State> {
           <label htmlFor="step">Step</label>
           <input
             className="carousel-controls__input"
-            {...{ for: 'stepId' }}
             id="step"
             data-cy="step"
             type="number"
@@ -104,7 +101,7 @@ class App extends React.Component<{}, State> {
             onChange={this.handleNumberChange('step', 1, 10)}
           />
 
-          <label htmlFor="animationDurationя">Animation duration</label>
+          <label htmlFor="animationDuration">Animation duration</label>
           <input
             className="carousel-controls__input"
             id="animationDurationя"

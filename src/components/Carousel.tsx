@@ -46,14 +46,21 @@ export const Carousel: React.FC<CarouselProps> = ({
       if (offset <= -trackWidth * 2) {
         setIsTransitioning(false);
         setOffset(-trackWidth);
-      } else if (offset >= 0) {
+      } else if (offset > -trackWidth) {
         setIsTransitioning(false);
-        setOffset(-trackWidth);
+        setOffset(-trackWidth * 2 + stepPx);
       }
     }, animationDuration);
 
     return () => clearTimeout(timer);
-  }, [offset, isTransitioning, infinite, trackWidth, animationDuration]);
+  }, [
+    offset,
+    isTransitioning,
+    infinite,
+    trackWidth,
+    animationDuration,
+    stepPx,
+  ]);
 
   useEffect(() => {
     if (!isTransitioning) {
