@@ -32,7 +32,7 @@ class App extends React.Component<{}, State> {
     frameSize: 3,
     step: 3,
     animationDuration: 1000,
-    infinite: false,
+    infinite: true,
   };
 
   clamp(value: number, min: number, max: number) {
@@ -82,7 +82,7 @@ class App extends React.Component<{}, State> {
           <input
             className="carousel-controls__input"
             {...{ for: 'frameId' }}
-            id="frameId"
+            id="frameSize"
             data-cy="frameSize"
             type="number"
             min={1}
@@ -95,7 +95,7 @@ class App extends React.Component<{}, State> {
           <input
             className="carousel-controls__input"
             {...{ for: 'stepId' }}
-            id="stepId"
+            id="step"
             data-cy="step"
             type="number"
             min={1}
@@ -104,9 +104,10 @@ class App extends React.Component<{}, State> {
             onChange={this.handleNumberChange('step', 1, 10)}
           />
 
-          <label htmlFor="animationDuration">Animation duration</label>
+          <label htmlFor="animationDurationя">Animation duration</label>
           <input
             className="carousel-controls__input"
+            id="animationDurationя"
             data-cy="animationDuration"
             type="number"
             min={100}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './Carousel.scss';
 import { useRef, useState } from 'react';
 
@@ -21,20 +21,66 @@ export const Carousel: React.FC<CarouselProps> = ({
 }) => {
   const frameRef = useRef<HTMLDivElement>(null);
   const [offset, setOffset] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(true);
   const frameWidth = frameSize * itemWidth;
   const stepPx = step * itemWidth;
   const trackWidth = images.length * itemWidth;
 
   const maxOffset = Math.min(0, frameWidth - trackWidth);
+  const displayImages = infinite ? [...images, ...images, ...images] : images;
+  const displayTrackWidth = displayImages.length * itemWidth;
+
+  useEffect(() => {
+    if (infinite) {
+      setOffset(-trackWidth);
+      setIsTransitioning(false);
+    }
+  }, [infinite, trackWidth]);
+
+  useEffect(() => {
+    if (!infinite || !isTransitioning) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      if (offset <= -trackWidth * 2) {
+        setIsTransitioning(false);
+        setOffset(-trackWidth);
+      } else if (offset >= 0) {
+        setIsTransitioning(false);
+        setOffset(-trackWidth);
+      }
+    }, animationDuration);
+
+    return () => clearTimeout(timer);
+  }, [offset, isTransitioning, infinite, trackWidth, animationDuration]);
+
+  useEffect(() => {
+    if (!isTransitioning) {
+      const timer = setTimeout(() => {
+        setIsTransitioning(true);
+      }, 50);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isTransitioning]);
 
   const handleNext = () => {
-    setOffset(prev =>
-      infinite ? prev - stepPx : Math.max(prev - stepPx, maxOffset),
-    );
+    if (infinite) {
+      setIsTransitioning(true);
+      setOffset(prev => prev - stepPx);
+    } else {
+      setOffset(prev => Math.max(prev - stepPx, maxOffset));
+    }
   };
 
   const handlePrev = () => {
-    setOffset(prev => (infinite ? prev + stepPx : Math.min(prev + stepPx, 0)));
+    if (infinite) {
+      setIsTransitioning(true);
+      setOffset(prev => prev + stepPx);
+    } else {
+      setOffset(prev => Math.min(prev + stepPx, 0));
+    }
   };
 
   return (
@@ -48,14 +94,16 @@ export const Carousel: React.FC<CarouselProps> = ({
           className="Carousel__track"
           style={{
             transform: `translateX(${offset}px)`,
-            transition: `transform ${animationDuration}ms ease`,
-            width: trackWidth,
+            transition: isTransitioning
+              ? `transform ${animationDuration}ms ease`
+              : 'none',
+            width: infinite ? displayTrackWidth : trackWidth,
           }}
         >
-          {images.map(img => (
+          {displayImages.map((img, index) => (
             <li
               className="Carousel__item"
-              key={img}
+              key={`${img}-${index}`}
               style={{ width: itemWidth }}
             >
               <img src={img} alt="" width={itemWidth} height={itemWidth} />
